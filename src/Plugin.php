@@ -24,8 +24,6 @@ class Plugin extends PluginBase
 
   public function boot()
   {
-    idea_listen('core.admin_content_render', AdminContentRender::class);
-
     if (idea()->isAdmin()) {
 	    document()->addStyle('media-manager-css', idea()->asset('css/media-manager.min.css'));
     	document()->addScript('media-manager-js', idea()->asset('js/media-manager.js'));

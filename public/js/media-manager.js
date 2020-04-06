@@ -41,7 +41,7 @@
       data: {
         loaded: false,
         loading: false,
-        directory: MediaComposer.path,
+        directory: MediaManager.path,
         directoryTree: [],
         opened: false,
         files: [],
@@ -237,14 +237,14 @@
               this.onSelect = null;
             }
 
-            MediaComposer.close();
+            MediaManager.close();
           }
         },
 
         changeDirectory: function () {
           let path = '/' + this.directoryTree.join('/');
 
-          MediaComposer.path = path;
+          MediaManager.path = path;
 
           this.load(path);
         },
