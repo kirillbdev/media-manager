@@ -40,7 +40,12 @@ class Plugin extends PluginBase
 	  ];
   }
 
-	protected function routes()
+  public function migrations()
+  {
+    return __DIR__ . '/../migrations';
+  }
+
+  protected function routes()
   {
     return __DIR__ . '/routes.php';
   }
