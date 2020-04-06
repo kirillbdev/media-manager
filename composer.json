@@ -1,0 +1,21 @@
+{
+    "name": "kirillbdev/media-manager",
+    "description": "Media manager plugin for Idea CMS",
+    "type": "idea-cms-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kirillbdev",
+            "email": "kirill.babinec@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+      "kirillbdev/idea-cms": "master"
+    },
+    "autoload": {
+      "psr-4": {
+        "kirillbdev\\MediaManager\\": "src/"
+      }
+    }
+}
