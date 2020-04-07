@@ -35,6 +35,25 @@
     </div>
   `;
 
+  let MediaManager = {
+    open: function (options) {
+      if ( ! this.path) {
+        this.path = '/';
+      }
+
+      this.$modal = IdeaModal.makeHTML(html, {
+        onReady: function (modal) {
+          initMM(options);
+        }
+      });
+
+      this.$modal.show();
+    },
+    close: function () {
+      this.$modal.destroy();
+    }
+  };
+
   let initMM = function (options) {
     let $vue = new Vue({
       el: '#media-composer',
@@ -259,22 +278,5 @@
     $vue.open(options);
   };
 
-  window.MediaManager = {
-    open: function (options) {
-      if ( ! this.path) {
-        this.path = '/';
-      }
-
-      this.$modal = IdeaModal.makeHTML(html, {
-        onReady: function (modal) {
-          initMM(options);
-        }
-      });
-
-      this.$modal.show();
-    },
-    close: function () {
-      this.$modal.destroy();
-    }
-  };
+  ServiceContainer.bindService('media-manager', MediaManager);
 })();

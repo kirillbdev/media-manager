@@ -3,7 +3,8 @@
 namespace kirillbdev\MediaManager;
 
 use Idea\Base\PluginBase;
-use kirillbdev\MediaManager\Events\AdminContentRender;
+use Idea\Contracts\ImageServiceInterface;
+use kirillbdev\MediaManager\Services\ImageService;
 
 class Plugin extends PluginBase
 {
@@ -24,6 +25,8 @@ class Plugin extends PluginBase
 
   public function boot()
   {
+    app()->bind(ImageServiceInterface::class, ImageService::class);
+
     if (idea()->isAdmin()) {
 	    document()->addStyle('media-manager-css', idea()->asset('css/media-manager.min.css'));
     	document()->addScript('media-manager-js', idea()->asset('js/media-manager.js'));

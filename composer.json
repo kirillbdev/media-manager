@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-      "kirillbdev/idea-cms": "master"
+      "kirillbdev/idea-cms": "master",
+      "intervention/image": "^2.5"
     },
     "autoload": {
       "psr-4": {
