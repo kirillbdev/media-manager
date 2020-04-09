@@ -2,7 +2,7 @@
 
 namespace kirillbdev\MediaManager\Services;
 
-use Idea\Contracts\ImageServiceInterface;
+use IdeaCms\Core\Contracts\ImageServiceInterface;
 use Illuminate\Support\Facades\DB;
 use kirillbdev\MediaManager\Model\Image;
 

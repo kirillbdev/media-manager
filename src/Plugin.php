@@ -2,8 +2,8 @@
 
 namespace kirillbdev\MediaManager;
 
-use Idea\Base\PluginBase;
-use Idea\Contracts\ImageServiceInterface;
+use IdeaCms\Core\Base\PluginBase;
+use IdeaCms\Core\Contracts\ImageServiceInterface;
 use kirillbdev\MediaManager\Services\ImageService;
 
 class Plugin extends PluginBase
