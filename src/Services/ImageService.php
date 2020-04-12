@@ -36,7 +36,9 @@ class ImageService implements ImageServiceInterface
       return '';
     }
 
-    if ($width && $height) {
+    $ext = pathinfo(config('idea_cms.media_manager_base_path') . '/' . trim($path, '/'), PATHINFO_EXTENSION);
+
+    if ('svg' !== $ext && $width && $height) {
       $image = new Image(config('idea_cms.media_manager_base_path') . '/' . trim($path, '/'));
 
       return $image->resize($width, $height, $mode);
