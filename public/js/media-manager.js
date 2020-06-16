@@ -1,34 +1,52 @@
 (function () {
+  let icons = {
+
+  };
+
   let html = `
-    <div id="media-composer" class="media-composer" v-bind:class="{ loading: loading }">
-      <input type="file" accept=".jpg, .jpeg, .png" multiple class="media-manager__load-files">
-      <button v-on:click="loadFiles">Загрузить файлы</button>
-      <div class="media-composer__toolbar">
-        <button v-on:click.prevent="createFolder" class="btn btn--outline media-composer__tool-btn">Создать папку</button>
+    <div id="media-manager" class="media-manager" v-bind:class="{ loading: loading }">
+      <div class="media-manager__top-panel">
+        <input type="file" accept=".jpg, .jpeg, .png" multiple class="media-manager__load-files">
+        <button v-on:click="loadFiles">Загрузить файлы</button>
+        <button v-on:click.prevent="createFolder" class="btn btn--outline media-manager__tool-btn">Создать папку</button>
       </div>
-      <div class="media-composer__files">
+      <div class="media-manager__files">
         <div v-if="directory !== '/'"
-             class="media-manager-item media-manager-item--back"
+             class="media-manager-file"
              v-on:dblclick="backDirectory()">
-          <img src="/image/admin/media-manager/folder.png">
-          <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="459px" height="459px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve">
-          <g><g id="reply"><path d="M178.5,140.25v-102L0,216.75l178.5,178.5V290.7c127.5,0,216.75,40.8,280.5,130.05C433.5,293.25,357,165.75,178.5,140.25z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+           <div class="media-manager-file__inner">
+              <img class="media-manager-file__dir-img" src="/image/admin/media-manager/folder.png">
+              <div class="media-manager-file__dir-name">Назад</div>
+           </div>
         </div>
 
-        <div v-for="(file, fileIndex) in files" v-bind:data-url="file.url"
-             class="media-composer-item"
-             v-bind:class="{
-                'media-manager-item--file': file.type === 'file',
-                active: file.active
-             }"
-             v-on:dblclick="selectFile(file)"
-        >
-          <div class="media-composer-item__actions">
-            <a href="#" v-on:click.prevent="renameFile(file)" class="mm-action-btn mm-action-btn--rename" title="Переименовать"></a>
-            <a href="#" v-on:click.prevent="deleteFile(file, fileIndex)" class="mm-action-btn mm-action-btn--delete" title="Удалить"></a>
-          </div>
-          <img v-bind:src="file.type === 'directory' ? '/image/admin/media-manager/folder.png' : file.preview">
-          <div class="media-composer-item__name">{{ file.name }}</div>
+        <div v-for="(file, fileIndex) in files" v-bind:data-url="file.url" class="media-manager-file"
+             v-bind:class="{ 'media-manager-file--dir': file.type === 'directory', active: file.active }"
+             v-on:dblclick="selectFile(file)">
+             <template v-if="'directory' === file.type">
+                <div class="media-manager-file__inner">
+                  <img class="media-manager-file__dir-img" src="/image/admin/media-manager/folder.png">
+                  <div class="media-manager-file__dir-name">{{ file.name }}</div>
+                  <div class="media-manager-file__info media-manager-file__info--dir">
+                    <div class="media-manager-file__actions">
+                      <a href="#" v-on:click.prevent="renameFile(file)" class="media-manager-file__action-btn">Переименовать</a>
+                      <a href="#" v-on:click.prevent="deleteFile(file, fileIndex)" class="media-manager-file__action-btn">Удалить</a>
+                    </div>
+                  </div>
+                </div>
+             </template>
+             <template v-else>
+                <div class="media-manager-file__inner">
+                  <img class="media-manager-file__preview" v-bind:src="file.preview">
+                  <div class="media-manager-file__info">
+                    <div class="media-manager-file__name">{{ file.name }}</div>
+                    <div class="media-manager-file__actions">
+                      <a href="#" v-on:click.prevent="renameFile(file)" class="media-manager-file__action-btn">Переименовать</a>
+                      <a href="#" v-on:click.prevent="deleteFile(file, fileIndex)" class="media-manager-file__action-btn">Удалить</a>
+                    </div>
+                  </div>
+                </div>
+             </template>
         </div>
 
       </div>
@@ -42,6 +60,7 @@
       }
 
       this.$modal = IdeaModal.makeHTML(html, {
+        modalClass: 'media-manager-wrap',
         onReady: function (modal) {
           initMM(options);
         }
@@ -56,7 +75,7 @@
 
   let initMM = function (options) {
     let $vue = new Vue({
-      el: '#media-composer',
+      el: '#media-manager',
       data: {
         loaded: false,
         loading: false,

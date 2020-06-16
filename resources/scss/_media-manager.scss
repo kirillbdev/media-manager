@@ -1,5 +1,25 @@
-.media-composer {
-  width: 1000px;
+.media-manager-wrap {
+  width: 80%;
+  height: 80%;
+}
+
+.media-manager {
+  width: 100%;
+  height: 100%;
+
+  &__top-panel {
+    display: flex;
+    align-items: center;
+  }
+
+  &__files {
+    display: flex;
+    flex-wrap: wrap;
+    height: calc(100% - 50px);
+    margin-top: 30px;
+    padding-right: 15px;
+    overflow: auto;
+  }
 
   &:before {
     position: absolute;
@@ -54,21 +74,38 @@
     }
   }
 
-  &__toolbar {
-    margin-top: 15px;
-  }
-
   &__tool-btn {
+    margin-left: 15px;
     padding: 4px 30px;
     font-size: 13px;
   }
+}
 
-  &__files {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 30px;
-    padding-right: 15px;
-    height: 500px;
-    overflow: auto;
+@media (max-width: 767px) {
+
+  .media-manager-wrap {
+    width: 90%;
+    height: 90%;
   }
+
+  .media-manager {
+
+    &__top-panel {
+      flex-wrap: wrap;
+    }
+
+    &__load-files {
+      margin-bottom: 5px;
+    }
+
+    &__tool-btn {
+      margin-left: 0;
+      margin-top: 5px;
+    }
+
+    &__files {
+      height: calc(100% - 118px);
+    }
+  }
+
 }
