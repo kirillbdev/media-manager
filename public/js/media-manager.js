@@ -111,28 +111,26 @@
          * Загрузка изображений
          */
         load: function (dir) {
-          let $mm = this;
+            let $mm = this;
 
-          this.loading = true;
+            this.loading = true;
 
-          axios.get('/media-manager/getImages', {
-            params: {
-              directory: dir
-            }
-          })
-            .then(function (response) {
-              let files = response.data.files;
+            IdeaAjax.get('/media-manager/getImages', {
+                directory: dir
+            })
+            .success(function (response) {
+                let files = response.data.files;
 
-              for (let i = 0; i < files.length; i++) {
-                files[i].active = false;
-              }
+                for (let i = 0; i < files.length; i++) {
+                    files[i].active = false;
+                }
 
-              $mm.directory = dir;
-              $mm.files = files;
-              $mm.loading = false;
+                $mm.directory = dir;
+                $mm.files = files;
+                $mm.loading = false;
+
+                $mm.loaded = true;
             });
-
-          this.loaded = true;
         },
 
         loadFiles: function (event) {
@@ -152,48 +150,43 @@
 
           formData.append('directory', this.directory);
 
-          axios.post('/admin/media-manager/upload', formData, {
-            headers: {
+          IdeaAjax.post('/admin/media-manager/upload', formData, {
               'Content-Type': 'multipart/form-data'
-            }
           })
-            .then(function (response) {
+          .success(function (response) {
+              if (response.isSuccess()) {
+                  $mm.load($mm.directory);
+                  $file.value = '';
 
-              if (response.data.success) {
-                $mm.load($mm.directory);
-                $file.value = '';
+                  if (response.data.errors.length) {
+                      alert(response.data.errors.join('\n'));
+                  }
               }
-              else {
-                $mm.loading = false;
-                alert(response.data.data.message);
-              }
-
-            });
+          })
+          .response(function () {
+              $mm.loading = false;
+          });
         },
 
         createFolder: function () {
-          let $mm = this,
+            let $mm = this,
             folderName = prompt("Введите название папки", 'Новая папка');
 
-          if (folderName) {
-            let formData = new FormData();
+            if (folderName) {
+                let formData = new FormData();
 
-            formData.append('name', folderName);
-            formData.append('directory', this.directory);
+                formData.append('name', folderName);
+                formData.append('directory', this.directory);
 
-            axios.post('/admin/media-manager/createDirectory', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            })
-              .then(function (response) {
-
-                if (response.data.success) {
-                  $mm.load($mm.directory);
-                }
-
-              });
-          }
+                IdeaAjax.post('/admin/media-manager/createDirectory', formData, {
+                    'Content-Type': 'multipart/form-data'
+                })
+                .success(function (response) {
+                    if (response.isSuccess()) {
+                        $mm.load($mm.directory);
+                    }
+                });
+            }
         },
 
         openFileActions: function (index) {
@@ -210,57 +203,58 @@
         },
 
         deleteFile: function (file, fileIndex) {
-          if ( ! confirm('Подтвердите действие')) {
-            return;
-          }
-
-          let mm = this,
-            formData = new FormData();
-
-          this.loading = true;
-
-          formData.append('name', file.name);
-          formData.append('directory', this.directory);
-
-          axios.post('/admin/media-manager/delete', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
+            if ( ! confirm('Подтвердите действие')) {
+                return;
             }
-          })
-            .then(function (response) {
-              if (response.data.success) {
-                mm.files.splice(fileIndex, 1);
-              }
 
-              mm.loading = false;
+            let mm = this,
+                formData = new FormData();
+
+            this.loading = true;
+
+            formData.append('name', file.name);
+            formData.append('directory', this.directory);
+
+            IdeaAjax.post('/admin/media-manager/delete', formData, {
+              'Content-Type': 'multipart/form-data'
+            })
+            .success(function (response) {
+                if (response.isSuccess()) {
+                    mm.files.splice(fileIndex, 1);
+                }
+
+
+            })
+            .response(function () {
+                mm.loading = false;
             });
         },
 
         renameFile: function(file) {
-          let newName = prompt('Новое имя', file.base_name);
+            let newName = prompt('Новое имя', file.base_name);
 
-          if ( ! newName || newName === file.base_name) {
-            return;
-          }
+            if ( ! newName || newName === file.base_name) {
+                return;
+            }
 
-          let mm = this,
+            let mm = this,
             formData = new FormData();
 
-          this.loading = true;
+            this.loading = true;
 
-          formData.append('old_name', file.name);
-          formData.append('new_name', newName + (file.extension ? '.' + file.extension : ''));
-          formData.append('directory', this.directory);
+            formData.append('old_name', file.name);
+            formData.append('new_name', newName + (file.extension ? '.' + file.extension : ''));
+            formData.append('directory', this.directory);
 
-          axios.post('/admin/media-manager/rename', formData, {
-            headers: {
+            IdeaAjax.post('/admin/media-manager/rename', formData, {
               'Content-Type': 'multipart/form-data'
-            }
-          })
-            .then(function (response) {
-              file.base_name = newName;
-              file.name = newName + (file.extension ? '.' + file.extension : '');
-              mm.loading = false;
+            })
+            .success(function (response) {
+                file.base_name = newName;
+                file.name = newName + (file.extension ? '.' + file.extension : '');
+            })
+            .response(function () {
+                mm.loading = false;
             });
         },
 
