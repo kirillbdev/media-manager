@@ -4,16 +4,16 @@ let gulp = require('gulp'),
     cleanCss = require('gulp-clean-css');
 
 gulp.task('compile-scss', function () {
-  return gulp.src('resources/scss/main.scss')
-    .pipe(sass().on('error', function (error) {
-        console.log('ERROR: ' + error);
-    }))
-    .pipe(rename('media-manager.min.css'))
-    .pipe(cleanCss())
-    .pipe(gulp.dest('../../public/css'))
-    .pipe(gulp.dest('public/css'));
+    return gulp.src('resources/scss/main.scss')
+        .pipe(sass().on('error', function (error) {
+            console.log('ERROR: ' + error);
+        }))
+        .pipe(rename('media-manager.min.css'))
+        .pipe(cleanCss())
+        .pipe(gulp.dest('../../public/css'))
+        .pipe(gulp.dest('public/css'));
 });
 
 gulp.task('watch-scss', function () {
-  gulp.watch('resources/scss/**/*.scss', gulp.series('compile-scss'));
+    gulp.watch('resources/scss/**/*.scss', gulp.series('compile-scss'));
 });
