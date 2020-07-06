@@ -7,6 +7,7 @@ use kirillbdev\MediaManager\Model\Attachment;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use kirillbdev\MediaManager\Services\MediaManagerService;
 
 class MediaManagerController extends Controller
 {
@@ -25,11 +26,17 @@ class MediaManagerController extends Controller
     private $logs = [];
 
     /**
+     * @var MediaManagerService
+     */
+    private $mediaManagerService;
+
+    /**
      * MediaManagerController constructor.
      * @param Request $request
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, MediaManagerService $mediaManagerService)
     {
+        $this->mediaManagerService = $mediaManagerService;
         $this->basePath = config('idea_cms.media_manager_base_path');
         $this->baseUrl = config('idea_cms.media_manager_base_url');
 
@@ -113,19 +120,21 @@ class MediaManagerController extends Controller
             $this->uploadFile($file);
         }
 
-        return [
+        return response()->json([
             'success' => true,
             'errors' => $this->logs
-        ];
+        ]);
     }
 
     public function createDirectory(Request $request)
     {
-        File::makeDirectory($this->basePath . $this->directory . '/' . $request->input('name'));
+        $dirName = $this->mediaManagerService->prepareFilename($request->input('name'));
 
-        return [
+        File::makeDirectory($this->basePath . $this->directory . '/' . $dirName);
+
+        return response()->json([
             'success' => true
-        ];
+        ]);
     }
 
     /**
@@ -223,7 +232,9 @@ class MediaManagerController extends Controller
     private function uploadFile($file)
     {
         if ($file->isValid() && in_array($file->extension(), [ 'jpg', 'png', 'jpeg' ])) {
-            $file->move($this->basePath . $this->directory, $file->getClientOriginalName());
+            $fileName = $this->mediaManagerService->prepareFilename($file->getClientOriginalName());
+
+            $file->move($this->basePath . $this->directory, $fileName);
         }
         else {
             $this->logs[] = 'Файл ' . $file->getClientOriginalName() . ' поврежден или имеет недопустимый формат.';
