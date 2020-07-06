@@ -4,6 +4,8 @@ namespace kirillbdev\MediaManager;
 
 use IdeaCms\Core\Base\PluginBase;
 use IdeaCms\Core\Contracts\ImageServiceInterface;
+use Illuminate\Support\Facades\Event;
+use kirillbdev\MediaManager\Events\OptionsMenuEvent;
 use kirillbdev\MediaManager\Services\ImageService;
 
 class Plugin extends PluginBase
@@ -31,6 +33,8 @@ class Plugin extends PluginBase
             document()->addStyle('media-manager-css', idea()->asset('css/media-manager.min.css'));
             document()->addScript('media-manager-js', idea()->asset('js/media-manager.js'));
         }
+
+        Event::listen('options_menu_extend', OptionsMenuEvent::class);
     }
 
     public function publishes()
@@ -53,6 +57,6 @@ class Plugin extends PluginBase
 
     protected function views()
     {
-        return __DIR__ . '/views';
+        return __DIR__ . '/../resources/views';
     }
 }

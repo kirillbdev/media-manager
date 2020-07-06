@@ -2,6 +2,7 @@
 
 namespace kirillbdev\MediaManager\Controllers;
 
+use IdeaCms\Core\Helpers\OptionStorage;
 use Illuminate\Http\UploadedFile;
 use kirillbdev\MediaManager\Model\Attachment;
 use Illuminate\Routing\Controller;
@@ -31,12 +32,18 @@ class MediaManagerController extends Controller
     private $mediaManagerService;
 
     /**
+     * @var int
+     */
+    private $allowSvg;
+
+    /**
      * MediaManagerController constructor.
      * @param Request $request
      */
     public function __construct(Request $request, MediaManagerService $mediaManagerService)
     {
         $this->mediaManagerService = $mediaManagerService;
+        $this->allowSvg = (int)OptionStorage::getOption('media_manager_allow_svg', 0);
         $this->basePath = config('idea_cms.media_manager_base_path');
         $this->baseUrl = config('idea_cms.media_manager_base_url');
 
@@ -233,7 +240,13 @@ class MediaManagerController extends Controller
      */
     private function uploadFile($file)
     {
-        if ($file->isValid() && in_array($file->extension(), [ 'jpg', 'png', 'jpeg' ])) {
+        $allowedFormat = array_merge([
+            'jpg',
+            'png',
+            'jpeg'
+        ], $this->allowSvg ? [ 'svg' ] : []);
+
+        if ($file->isValid() && in_array($file->extension(), $allowedFormat)) {
             $fileName = $this->mediaManagerService->prepareFilename($file->getClientOriginalName());
 
             $file->move($this->basePath . $this->directory, $fileName);

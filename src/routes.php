@@ -13,4 +13,7 @@ Route::namespace('\kirillbdev\MediaManager\Controllers')
             'MediaManagerController@rename'
         );
 
+        Route::get(\IdeaCms\Core\Helpers\Backend::getUriPrefix() . '/media-manager/settings', 'SettingsController@settings');
+        Route::post(\IdeaCms\Core\Helpers\Backend::getUriPrefix() . '/media-manager/settings', 'SettingsController@saveSettings');
+
     });
