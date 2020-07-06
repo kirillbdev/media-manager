@@ -182,16 +182,18 @@ class MediaManagerController extends Controller
             ];
         }
 
+        $newName = $this->mediaManagerService->prepareFilename($request->input('new_name'));
+
         if (File::exists($this->basePath . $this->directory . '/' . $request->input('old_name'))) {
             File::move(
                 $this->basePath . $this->directory . '/' . $request->input('old_name'),
-                $this->basePath . $this->directory . '/' . $request->input('new_name')
+                $this->basePath . $this->directory . '/' . $newName
             );
 
             Attachment::where('path', trim($this->directory, '/'))
                 ->where('name', $request->input('old_name'))
                 ->update([
-                    'name' => $request->input('new_name')
+                    'name' => $newName
                 ]);
         }
 
