@@ -243,7 +243,8 @@ class MediaManagerController extends Controller
         $allowedFormat = array_merge([
             'jpg',
             'png',
-            'jpeg'
+            'jpeg',
+            'gif'
         ], $this->allowSvg ? [ 'svg' ] : []);
 
         if ($file->isValid() && in_array($file->extension(), $allowedFormat)) {
